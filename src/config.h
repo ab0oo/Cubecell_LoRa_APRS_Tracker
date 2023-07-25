@@ -12,34 +12,34 @@
 #define DEFAULT_PROFILE 0 // Profile to use after Reboot
 
 // Profile 0 - Car Symbol
-#define BEACON_SYMBOL ">"
+#define BEACON_SYMBOL "b"
 #define BEACON_OVERLAY "/"
-#define BEACON_MESSAGE  "Cubecell LoRa Tracker"
-#define SB_ACTIVE   true // smart Beacon
-#define BEACON_TIMEOUT  60  // fixed Beacon interval in s if Smartbeacon inactive
-#define CALLSIGN    "N0CALL-7"   // your callsign
-#define GPSMODE     0 // Vehicle mode: For general purpose
+#define BEACON_MESSAGE  ""
+#define SB_ACTIVE   false // smart Beacon
+#define BEACON_TIMEOUT  20  // fixed Beacon interval in s if Smartbeacon inactive
+#define CALLSIGN    "AB0OO-A"   // your callsign
+#define GPSMODE     1 // Vehicle mode: For general purpose
 #define SOSTIMEOUT  0 // Send a positionless Status Beacon, when no Position was send for given Time in Seconds. 0 to disable
 
 // Profile 1 - Runner Symbol
 #define P1_BEACON_SYMBOL "["
 #define P1_BEACON_OVERLAY "/"
-#define P1_BEACON_MESSAGE  "Running Cubecell LoRa"
+#define P1_BEACON_MESSAGE  "Running"
 #define P1_SB_ACTIVE   true // smart Beacon
 #define P1_BEACON_TIMEOUT  60  // fixed Beacon interval in s if Smartbeacon inactive
-#define P1_CALLSIGN    "N0CALL-8"   // your callsign
+#define P1_CALLSIGN    "AB0OO-A"   // your callsign
 #define P1_GPSMODE  1 //Pedestrian: For running and walking purpose that the low-speed (< 5m/s) movement will have more effect on the position calculation.
 #define P1_SOSTIMEOUT  0 // Send a positionless Status Beacon, when no Position was send for given Time in Seconds. 0 to disable
 
 // Profile 2 - Balloon
 #define P2_BEACON_SYMBOL "O"
 #define P2_BEACON_OVERLAY "/"
-#define P2_BEACON_MESSAGE  "Cubecell LoRa powered Balloon"
+#define P2_BEACON_MESSAGE  ""
 #define P2_SB_ACTIVE   false // smart Beacon
 #define P2_BEACON_TIMEOUT  60  // fixed Beacon interval in s if Smartbeacon inactive
-#define P2_CALLSIGN    "N0CALL-12"   // your callsign
-#define P2_GPSMODE      3 // Balloon mode: For high-altitude balloon purpose that the vertical movement will have more effect on the position calculation.
-#define P2_SOSTIMEOUT  600 // Send a positionless Status Beacon, when no Position was send for given Time in Seconds. 0 to disable
+#define P2_CALLSIGN    "AB0OO-A"   // your callsign
+#define P2_GPSMODE      1 // Balloon mode: For high-altitude balloon purpose that the vertical movement will have more effect on the position calculation.
+#define P2_SOSTIMEOUT  0 // Send a positionless Status Beacon, when no Position was send for given Time in Seconds. 0 to disable
 
 // Global Settings for All Profiles
 // 
@@ -51,13 +51,13 @@
 #define DISPLAY_IDLE_TIMEOUT     15000     // Auto Shut OFF Display after re-activating in Shut-Off Mode
 #define VBAT_CORRECTION       1.004     // Edit this for calibrating your battery voltage
 
-#define RF_FREQUENCY                                433775000 // Hz
+#define RF_FREQUENCY                                913500000 // Hz
 #define TX_OUTPUT_POWER                             20        // dBm
 #define LORA_BANDWIDTH                              0         // [0: 125 kHz,
                                                               //  1: 250 kHz,
                                                               //  2: 500 kHz,
                                                               //  3: Reserved]
-#define LORA_SPREADING_FACTOR                       12        // [SF7..SF12]
+#define LORA_SPREADING_FACTOR                       7         // [SF7..SF12]
 #define LORA_CODINGRATE                             1         // [1: 4/5,
                                                               //  2: 4/6,
                                                               //  3: 4/7,
@@ -70,7 +70,7 @@
 #define RX_TIMEOUT_VALUE                            1000
 #define BUFFER_SIZE                                 200 // Define the payload size here (max 255?)
 
-#define DEBUG false // Enable/Disable debug output over the serial console
+#define DEBUG true  // Enable/Disable debug output over the serial console
 #define EXT_GPS_DATA    false   // Feed external GPS NMEA Data via Serial for 
 
 #define PTT_ACTIVE  false // ptt output

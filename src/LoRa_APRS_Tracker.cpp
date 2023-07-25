@@ -296,7 +296,7 @@ void loop() {
       aprsmsg += DBEACON_MESSAGE;
     
       if (BatteryIsConnected) {
-        aprsmsg += " - U: " + batteryVoltage + "V";
+        aprsmsg += " -U:" + batteryVoltage + "V";
       }
     }
 
