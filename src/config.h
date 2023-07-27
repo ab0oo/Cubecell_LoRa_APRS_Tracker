@@ -24,7 +24,8 @@
 // Profile 1 - Runner Symbol
 #define P1_BEACON_SYMBOL "["
 #define P1_BEACON_OVERLAY "/"
-#define P1_BEACON_MESSAGE  "John on foot" #define P1_SB_ACTIVE   true // smart Beacon
+#define P1_BEACON_MESSAGE  "John on foot" 
+#define P1_SB_ACTIVE   true // smart Beacon
 #define P1_BEACON_TIMEOUT  60  // fixed Beacon interval in s if Smartbeacon inactive
 #define P1_CALLSIGN    "AB0OO-A"   // your callsign
 #define P1_GPSMODE  1 //Pedestrian: For running and walking purpose that the low-speed (< 5m/s) movement will have more effect on the position calculation.
