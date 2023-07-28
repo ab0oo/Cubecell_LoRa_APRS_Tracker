@@ -6,7 +6,7 @@
 #include <TimeLib.h>
 #include "display.h"
 #include <APRS-Decoder.h>
-//#include <EEPROM.h>
+#include "d_and_b.h"
 
 Air530ZClass                  gps;
 extern uint8_t                isDispayOn; // Defined in LoRaWan_APP.cpp
@@ -25,12 +25,14 @@ String createDateString(time_t t);
 String createTimeString(time_t t);
 String getSmartBeaconState();
 String padding(unsigned int number, unsigned int width);
+String whereIam = "UNKNOWN";
 
 static bool   BatteryIsConnected   = false;
 static String batteryVoltage       = "";
 static bool DSB_ACTIVE = SB_ACTIVE; // initial Smartbeacon State can be changed via menu
 static int DBEACON_TIMEOUT = BEACON_TIMEOUT; // initial Beacon Rate
 static bool DSCREEN_OFF = false; // initial Screen timeout deactivated
+static bool DWHEREAMI = false; // show dist/bearing to a point on home screen
 static int DPROFILE_NR = DEFAULT_PROFILE;
 static String DBEACON_SYMBOL = BEACON_SYMBOL;
 static String DBEACON_OVERLAY = BEACON_OVERLAY;
@@ -50,9 +52,9 @@ int16_t rssi, snr, rxSize;
 char txpacket[BUFFER_SIZE];
 char rxpacket[BUFFER_SIZE];
 
-#define MENU_CNT 8
+#define MENU_CNT 9
 
-char* menu[MENU_CNT] = {"Screen OFF", "Sleep", "Send now", "Faster Upd", "Slower Upd", "Tracker mode", "Profile", "Exit"}; //"Reset GPS", "Bat V/%"
+char* menu[MENU_CNT] = {"Screen OFF", "Sleep", "Send now", "Faster Upd", "Slower Upd", "Tracker mode", "Profile", "Where Am I", "Exit"}; //"Reset GPS", "Bat V/%
 
 enum eMenuEntries
 {
@@ -63,6 +65,7 @@ enum eMenuEntries
   SLOWER_UPD,
   TRACKER_MODE,
   PROFILE,
+  WHEREAMI,
   EXITM
   //RESET_GPS,
   //BAT_V_PCT
@@ -136,22 +139,6 @@ void setup() {
 
 // cppcheck-suppress unusedFunction
 void loop() {
-  //userButton.tick();
-
-  //value = EEPROM.read(address);
-
-  //Serial.print(address);
-  //Serial.print("\t");
-  //Serial.print(value, DEC);
-  //Serial.println();
-  // advance to the next address of the EEPROM
-  //address = address + 1;
-
-  // there are only 512 bytes of EEPROM, from 0 to 511, so if we're
-  // on address 512, wrap around to address 0
-  //if (address == 512) {
-  //  address = 0;
-  //}
 
   if (EXT_GPS_DATA) {
     while (Serial.available() > 0) {
@@ -171,6 +158,7 @@ void loop() {
   bool          gps_loc_update      = gps.location.isUpdated();
   bool          gps_loc_valid       = gps.location.isValid();
   static time_t nextBeaconTimeStamp = -1;
+  static int32_t lastWhereAmIUpdate = -1;
 
   static double       currentHeading          = 0;
   static double       previousHeading         = 0;
@@ -339,7 +327,7 @@ void loop() {
     if (getBattStatus() > 0){BatteryIsConnected = true;}
     batteryVoltage = String(getBattVoltage());
 
-    if(!menuMode && !screenOffMode){
+    if(!menuMode && !screenOffMode && !DWHEREAMI ){
       
       //show_display(CALLSIGN + String("") , (is_txing ? "TX" : ""), 
       show_display(DCALLSIGN + String("") , is_txing, 
@@ -349,6 +337,15 @@ void loop() {
         BatteryIsConnected ? (String("Bat: ") + batteryVoltage + "V") : "Powered via USB", 
         String("Smart Beacon: " + getSmartBeaconState()));
 
+    } else if (!menuMode && !screenOffMode && DWHEREAMI) {
+      if ( lastWhereAmIUpdate + 1000 < millis() ) {
+        double lat = gps.location.lat();
+        double lon = gps.location.lng();
+        Serial.printf("Lat: %d, Lon: %d\n", (int)(lat*10000), (int)(lon*10000));
+        lastWhereAmIUpdate = millis();
+        whereIam = getDAndBtoMan(lat, lon);
+      }
+      show_display_whereami(whereIam);
     }
 
     //Serial.print("Sats:");Serial.print(gps.satellites.value());
@@ -727,11 +724,14 @@ void displayMenu()
       currentValue = "Profile " + String(DPROFILE_NR) + ": " + DCALLSIGN;
       currentValue2 = DBEACON_MESSAGE;
     break;
+    case WHEREAMI:
+      currentValue = DWHEREAMI ? "Active" : "Inactive";
+      currentValue2 = DWHEREAMI ? "Dist and Bearing to Man" : "Standard Homescreen";
+    break;
   }
 
   show_display_menu("Menu            "+String(currentMenu+1)+"/"+String(MENU_CNT), "", currentOption, currentValue, currentValue2);
 }
-
 
 void executeMenu(void)
 {
@@ -798,6 +798,16 @@ void executeMenu(void)
       }
       activateProfile(DPROFILE_NR);
       displayMenu();
+      break;
+
+    case WHEREAMI:
+      if (DWHEREAMI){
+        DWHEREAMI = false;
+        displayMenu();
+      } else {
+        DWHEREAMI = true;
+        displayMenu();
+      }
       break;
 
     case EXITM:
@@ -946,11 +956,12 @@ uint8_t getBattStatus()
 
 void switchScrenOffMode()
 {
-  screenOffMode = true;  
-  //displayLogoAndMsg("Scren off....", 2000);          
+  screenOffMode = true;
+  //displayLogoAndMsg("Scren off....", 2000);
+  DWHEREAMI = false;  
   VextOFF();
   stop_display();
-  isDispayOn = 0;   
+  isDispayOn = 0;
 }
 
 void switchScreenOnMode()

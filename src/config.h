@@ -18,7 +18,7 @@
 #define SB_ACTIVE   true // smart Beacon
 #define BEACON_TIMEOUT  60  // fixed Beacon interval in s if Smartbeacon inactive
 #define CALLSIGN    "AB0OO-A"   // your callsign
-#define GPSMODE     0 // Vehicle mode: For general purpose
+#define GPSMODE     1 // Vehicle mode: For general purpose
 #define SOSTIMEOUT  0 // Send a positionless Status Beacon, when no Position was send for given Time in Seconds. 0 to disable
 
 // Profile 1 - Runner Symbol
@@ -91,3 +91,6 @@
 #define BEACON_BUTTON_TX    true // Push Button >2s to Tx Position
 #define ENHANCE_PRECISION   true // APRS DAO Extension. Adds two Digits of Precision to Lat and Lon
 
+static const double MAN_LAT = 40.786400; // 2023 Man Latitude
+static const double MAN_LON = -119.203500; // 2023 Man Longitude
+static const int MAN_OFFSET = -45; // degrees different between 12 and North

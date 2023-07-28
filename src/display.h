@@ -15,5 +15,6 @@ void show_display(String header, String line1, String line2, String line3, Strin
 void show_display(String header, bool isTxing, String line1, String line2, String line3, String line4, String line5, int wait = 0);
 void displayLogoAndMsg(String msg, uint32_t wait_ms);
 void show_display_menu(String header, String line1, String line2, String line3, String line4, int wait = 0);
+void show_display_whereami(String location , int wait = 0);
 
 #endif

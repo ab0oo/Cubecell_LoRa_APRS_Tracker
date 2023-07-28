@@ -230,3 +230,12 @@ void show_display_menu(String header, String line1, String line2, String line3, 
   display.display();
   delay(wait);
 }
+
+void show_display_whereami(String location, int wait) {
+  display.clear();
+  display.setFont(ArialMT_Plain_24);
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(0,10,  location);
+  display.display();
+  delay(wait);
+}
